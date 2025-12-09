@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从SEO到GEO：浏览器进化的前世今生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #0a192f;
+            color: #e6f1ff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .slides-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateX(100%);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide.previous {
+            transform: translateX(-100%);
+        }
+        
+        .slide-header {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .slide-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #64ffda, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+        }
+        
+        .slide-subtitle {
+            font-size: 1.3rem;
+            color: #a8b2d1;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .slide-content {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            gap: 50px;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .content-text {
+            flex: 1;
+            padding-right: 20px;
+        }
+        
+        .content-chart {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .chart-container {
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            height: 350px;
+            position: relative;
+        }
+        
+        .chart-title {
+            color: #64ffda;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .timeline-points {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .timeline-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(17, 34, 64, 0.5);
+            border-radius: 10px;
+            border-left: 4px solid #64ffda;
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .timeline-point:hover {
+            transform: translateY(-5px);
+            background: rgba(17, 34, 64, 0.8);
+        }
+        
+        .point-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #0a192f, #112240);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #64ffda;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .point-content h3 {
+            color: #e6f1ff;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .point-content p {
+            color: #a8b2d1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #64ffda;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #a8b2d1;
+            font-size: 0.95rem;
+        }
+        
+        .browser-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .browser-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #64ffda;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        
+        .browser-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .browser-label {
+            text-align: center;
+            margin-top: 10px;
+            color: #a8b2d1;
+            font-size: 0.9rem;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 1000; /* 提高层级确保在最上面 */
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(17, 34, 64, 0.9); /* 提高不透明度 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64ffda;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: 2px solid rgba(100, 255, 218, 0.5); /* 更明显的边框 */
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: #112240;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.4);
+        }
+        
+        .slide-indicators {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000; /* 提高层级确保在最上面 */
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(168, 178, 209, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .indicator.active {
+            background: #64ffda;
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.7);
+            transform: scale(1.3);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            color: #64ffda;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: rgba(17, 34, 64, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            z-index: 1000;
+        }
+        
+        .title-slide {
+            text-align: center;
+            background: radial-gradient(circle at center, #0a192f 0%, #071224 100%);
+        }
+        
+        .title-slide .slide-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .author {
+            color: #a8b2d1;
+            font-size: 1.2rem;
+            margin-top: 40px;
+        }
+        
+        /* 调试样式 - 如果按钮不可见，取消注释这些 */
+        /*
+        .nav-btn {
+            background: red !important; /* 测试按钮是否可见 */
+        }
+        */
+        
+        @media (max-width: 992px) {
+            .slide-content {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .content-text {
+                padding-right: 0;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .slide-title {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+            }
+            
+            .slide-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .browser-icons {
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            
+            .slide-indicators {
+                right: 15px;
+            }
+            
+            .navigation {
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+        <!-- 标题幻灯片 -->
+        <div class="slide active title-slide" id="slide-0">
+            <div class="slide-header">
+                <h1 class="slide-title">从SEO到GEO：浏览器进化的前世今生</h1>
+                <p class="slide-subtitle">探索浏览器技术演进如何推动数字营销从搜索引擎优化到地理位置优化的变革</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>研究背景</h3>
+                                <p>随着互联网技术的演进，浏览器作为互联网入口经历了革命性变化，这些变化深刻影响了数字营销策略的演变。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>研究目的</h3>
+                                <p>分析浏览器技术发展如何推动营销从关注全局搜索(SEO)转向关注地理位置(GEO)和上下文感知的个性化体验。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>研究方法</h3>
+                                <p>通过文献分析、数据统计和案例分析，划分六个关键阶段，揭示浏览器技术与数字营销策略的共生演进关系。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">浏览器与数字营销演进关系</div>
+                        <canvas id="titleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <p class="author">研究报告 · 交互式演示</p>
+        </div>
+        
+        <!-- 第一阶段：1990-1995 -->
+        <div class="slide" id="slide-1">
+            <div class="slide-header">
+                <h1 class="slide-title">第一阶段：浏览器诞生与静态网页时代 (1990-1995)</h1>
+                <p class="slide-subtitle">万维网的诞生和早期浏览器的出现，奠定互联网基础架构</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-desktop"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>WorldWideWeb浏览器 (1990)</h3>
+                                <p>蒂姆·伯纳斯-李开发了第一个网页浏览器，同时也是网页编辑器，为现代互联网奠定基础。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>Mosaic浏览器 (1993)</h3>
+                                <p>首个广泛使用的图形化网页浏览器，支持图像内联显示，极大提升了网页的可访问性和吸引力。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-ship"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>Netscape Navigator (1994)</h3>
+                                <p>首个商业成功的浏览器，引入了cookie、JavaScript等关键技术，推动互联网商业化进程。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value">10+</div>
+                            <div class="stat-label">网页数量(1993年，千级)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">1%</div>
+                            <div class="stat-label">全球互联网普及率(1995)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">早期浏览器市场份额(1995)</div>
+                        <canvas id="chart1"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">此时SEO概念尚未形成，网站主要通过目录列表和简单关键词匹配被发现</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第二阶段：1996-2000 -->
+        <div class="slide" id="slide-2">
+            <div class="slide-header">
+                <h1 class="slide-title">第二阶段：浏览器竞争与SEO兴起 (1996-2000)</h1>
+                <p class="slide-subtitle">浏览器大战催生技术进步，搜索引擎优化开始成为专门领域</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fab fa-internet-explorer"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>Internet Explorer (1995)</h3>
+                                <p>微软推出IE浏览器并随Windows系统免费捆绑，迅速改变浏览器市场格局，引发第一次浏览器大战。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>Google成立 (1998)</h3>
+                                <p>Google推出基于PageRank算法的搜索引擎，为现代SEO奠定基础，改变了信息检索方式。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>CSS与DHTML (1997-1998)</h3>
+                                <p>CSS和动态HTML技术出现，使网页设计更加丰富，也为SEO技术提供了更多优化维度。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value">95%</div>
+                            <div class="stat-label">IE市场份额峰值(2000)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">26M</div>
+                            <div class="stat-label">全球网站数量(2000)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">浏览器市场份额演变(1996-2000)</div>
+                        <canvas id="chart2"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">SEO开始关注关键词密度、元标签和链接建设，但多为技术性优化</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第三阶段：2001-2008 -->
+        <div class="slide" id="slide-3">
+            <div class="slide-header">
+                <h1 class="slide-title">第三阶段：标准之战与移动端兴起 (2001-2008)</h1>
+                <p class="slide-subtitle">Web标准运动与移动互联网萌芽，SEO向内容质量转变</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fab fa-firefox"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>Mozilla Firefox (2002)</h3>
+                                <p>开源浏览器打破IE垄断，推动Web标准发展，引入标签页浏览等创新功能。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>移动浏览器出现 (2000s)</h3>
+                                <p>Opera Mini、移动版IE等使移动浏览成为可能，为本地搜索和位置服务奠定基础。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>AJAX技术 (2005)</h3>
+                                <p>异步JavaScript和XML使网页无需刷新即可更新内容，推动了Web 2.0应用发展。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browser-icons">
+                        <div>
+                            <div class="browser-icon">
+                                <i class="fab fa-firefox"></i>
+                            </div>
+                            <div class="browser-label">Firefox</div>
+                        </div>
+                        <div>
+                            <div class="browser-icon">
+                                <i class="fab fa-safari"></i>
+                            </div>
+                            <div class="browser-label">Safari</div>
+                        </div>
+                        <div>
+                            <div class="browser-icon">
+                                <i class="fab fa-opera"></i>
+                            </div>
+                            <div class="browser-label">Opera</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">浏览器市场份额变化(2001-2008)</div>
+                        <canvas id="chart3"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">SEO重点转向内容质量、用户体验和移动友好性，本地搜索开始受到关注</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第四阶段：2009-2014 -->
+        <div class="slide" id="slide-4">
+            <div class="slide-header">
+                <h1 class="slide-title">第四阶段：Chrome革命与HTML5时代 (2009-2014)</h1>
+                <p class="slide-subtitle">Chrome重塑浏览器格局，HTML5和移动优先策略改变Web生态</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fab fa-chrome"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>Google Chrome (2008)</h3>
+                                <p>Chrome以极简设计和V8 JavaScript引擎重新定义浏览器性能标准，迅速占领市场。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>HTML5标准化 (2014)</h3>
+                                <p>HTML5提供原生多媒体支持、Canvas绘图和地理定位API，极大增强浏览器功能。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-mobile"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>响应式设计 (2010)</h3>
+                                <p>Ethan Marcotte提出响应式网页设计概念，解决多设备适配问题，成为SEO重要因素。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value">50%+</div>
+                            <div class="stat-label">Chrome市场份额(2014)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">60%</div>
+                            <div class="stat-label">移动搜索占比(2014)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">浏览器市场份额变化(2009-2014)</div>
+                        <canvas id="chart4"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">Google算法更新(Panda, Penguin)打击低质量内容，移动优先和页面速度成为SEO核心</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第五阶段：2015-2020 -->
+        <div class="slide" id="slide-5">
+            <div class="slide-header">
+                <h1 class="slide-title">第五阶段：智能浏览器与GEO兴起 (2015-2020)</h1>
+                <p class="slide-subtitle">AI集成、渐进式Web应用和位置服务推动GEO成为营销核心</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>AI与浏览器集成 (2016+)</h3>
+                                <p>浏览器开始集成机器学习功能，如智能推荐、语音助手和图像识别，提升个性化体验。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>地理位置API成熟</h3>
+                                <p>Geolocation API标准化，使网站能获取用户位置信息，为本地化服务和GEO营销提供技术支持。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>渐进式Web应用(PWA)</h3>
+                                <p>PWA结合网页和APP优势，支持离线使用和推送通知，特别适合基于位置的服务。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value">82%</div>
+                            <div class="stat-label">智能手机渗透率(2020)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">46%</div>
+                            <div class="stat-label">搜索带有本地意图(2020)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">GEO相关技术采用率增长(2015-2020)</div>
+                        <canvas id="chart5"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">GEO成为独立营销领域，整合位置数据、本地搜索优化和个性化位置服务</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第六阶段：2021至今 -->
+        <div class="slide" id="slide-6">
+            <div class="slide-header">
+                <h1 class="slide-title">第六阶段：隐私优先与上下文智能 (2021至今)</h1>
+                <p class="slide-subtitle">隐私保护、无Cookie追踪和AI驱动个性化重塑浏览器与GEO未来</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>隐私保护升级</h3>
+                                <p>Safari的ITP、Firefox的ETP和Chrome的隐私沙盒限制第三方Cookie，改变数字营销追踪方式。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>上下文智能GEO</h3>
+                                <p>AI结合位置数据、时间、用户行为和环境信息，提供高度个性化的上下文感知服务。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-vr-cardboard"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>AR与空间计算</h3>
+                                <p>浏览器支持WebAR和WebXR，将数字信息叠加到物理世界，创建沉浸式GEO体验。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browser-icons">
+                        <div>
+                            <div class="browser-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="browser-label">隐私保护</div>
+                        </div>
+                        <div>
+                            <div class="browser-icon">
+                                <i class="fas fa-ai"></i>
+                            </div>
+                            <div class="browser-label">AI集成</div>
+                        </div>
+                        <div>
+                            <div class="browser-icon">
+                                <i class="fas fa-satellite"></i>
+                            </div>
+                            <div class="browser-label">空间Web</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">隐私保护技术对GEO营销的影响</div>
+                        <canvas id="chart6"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">未来GEO将依赖第一方数据、上下文分析和隐私保护技术提供个性化位置服务</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 总结幻灯片 -->
+        <div class="slide" id="slide-7">
+            <div class="slide-header">
+                <h1 class="slide-title">总结：浏览器进化驱动营销范式转变</h1>
+                <p class="slide-subtitle">从全局搜索优化到地理位置优化的演进反映了互联网技术的根本性转变</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-text">
+                    <div class="timeline-points">
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>技术演进推动营销变革</h3>
+                                <p>浏览器从简单文档查看器发展为智能应用平台，推动营销从关键词优化转向基于位置和上下文的个性化体验。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>隐私与个性化的平衡</h3>
+                                <p>现代浏览器在提供强大GEO功能的同时，也加强隐私保护，推动营销向第一方数据和上下文智能转型。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="point-icon">
+                                <i class="fas fa-crystal-ball"></i>
+                            </div>
+                            <div class="point-content">
+                                <h3>未来趋势预测</h3>
+                                <p>浏览器将进一步整合AR/VR、空间计算和AI，创造无缝的数字-物理体验，使GEO成为所有数字交互的核心维度。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value">30年</div>
+                            <div class="stat-label">浏览器发展历程</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">6个</div>
+                            <div class="stat-label">关键演进阶段</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-chart">
+                    <div class="chart-container">
+                        <div class="chart-title">SEO到GEO的演进路径</div>
+                        <canvas id="chart7"></canvas>
+                    </div>
+                    <p style="color:#a8b2d1; font-size:0.9rem; margin-top:15px; text-align:center">浏览器作为互联网入口，将持续塑造数字营销的未来形态和策略方向</p>
+                </div>
+            </div>
+            <p class="author">研究报告结束 · 感谢观看</p>
+        </div>
+        
+        <!-- 导航控件 -->
+        <div class="slide-indicators">
+            <div class="indicator active" data-slide="0"></div>
+            <div class="indicator" data-slide="1"></div>
+            <div class="indicator" data-slide="2"></div>
+            <div class="indicator" data-slide="3"></div>
+            <div class="indicator" data-slide="4"></div>
+            <div class="indicator" data-slide="5"></div>
+            <div class="indicator" data-slide="6"></div>
+            <div class="indicator" data-slide="7"></div>
+        </div>
+        
+        <div class="navigation">
+            <div class="nav-btn" id="prev-btn">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="nav-btn" id="next-btn">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+        
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">8</span>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("页面已加载，初始化幻灯片系统...");
+            
+            // 幻灯片管理
+            const slides = document.querySelectorAll('.slide');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentSlideEl = document.getElementById('current-slide');
+            const totalSlidesEl = document.getElementById('total-slides');
+            
+            console.log("找到的幻灯片数量:", slides.length);
+            console.log("上一页按钮:", prevBtn);
+            console.log("下一页按钮:", nextBtn);
+            
+            let currentSlideIndex = 0;
+            const totalSlides = slides.length;
+            
+            totalSlidesEl.textContent = totalSlides;
+            
+            // 初始化所有图表
+            let charts = [];
+            
+            // 更新幻灯片显示
+            function updateSlides() {
+                console.log("切换到幻灯片:", currentSlideIndex);
+                
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active', 'previous');
+                    
+                    if (index === currentSlideIndex) {
+                        slide.classList.add('active');
+                    } else if (index === currentSlideIndex - 1) {
+                        slide.classList.add('previous');
+                    }
+                });
+                
+                // 更新指示器
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.remove('active');
+                    if (index === currentSlideIndex) {
+                        indicator.classList.add('active');
+                    }
+                });
+                
+                // 更新计数器
+                currentSlideEl.textContent = currentSlideIndex + 1;
+                
+                // 当切换到新幻灯片时，初始化该幻灯片的图表
+                initializeChartForSlide(currentSlideIndex);
+            }
+            
+            // 初始化指定幻灯片的图表
+            function initializeChartForSlide(slideIndex) {
+                // 如果图表已初始化，则跳过
+                if (charts[slideIndex]) return;
+                
+                console.log("初始化图表:", slideIndex);
+                
+                switch(slideIndex) {
+                    case 0:
+                        createTitleChart();
+                        break;
+                    case 1:
+                        createChart1();
+                        break;
+                    case 2:
+                        createChart2();
+                        break;
+                    case 3:
+                        createChart3();
+                        break;
+                    case 4:
+                        createChart4();
+                        break;
+                    case 5:
+                        createChart5();
+                        break;
+                    case 6:
+                        createChart6();
+                        break;
+                    case 7:
+                        createChart7();
+                        break;
+                }
+                
+                charts[slideIndex] = true;
+            }
+            
+            // 导航功能
+            function goToSlide(index) {
+                console.log("跳转到幻灯片:", index);
+                if (index >= 0 && index < totalSlides) {
+                    currentSlideIndex = index;
+                    updateSlides();
+                }
+            }
+            
+            function nextSlide() {
+                console.log("下一页被调用");
+                if (currentSlideIndex < totalSlides - 1) {
+                    currentSlideIndex++;
+                    updateSlides();
+                }
+            }
+            
+            function prevSlide() {
+                console.log("上一页被调用");
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    updateSlides();
+                }
+            }
+            
+            // 事件监听 - 使用更可靠的事件绑定
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function(e) {
+                    console.log("上一页按钮被点击");
+                    e.stopPropagation();
+                    prevSlide();
+                });
+                
+                // 添加鼠标样式
+                prevBtn.style.cursor = 'pointer';
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function(e) {
+                    console.log("下一页按钮被点击");
+                    e.stopPropagation();
+                    nextSlide();
+                });
+                
+                // 添加鼠标样式
+                nextBtn.style.cursor = 'pointer';
+            }
+            
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', function() {
+                    const slideIndex = parseInt(this.getAttribute('data-slide'));
+                    console.log("指示器被点击:", slideIndex);
+                    goToSlide(slideIndex);
+                });
+                
+                // 添加鼠标样式
+                indicator.style.cursor = 'pointer';
+            });
+            
+            // 键盘导航
+            document.addEventListener('keydown', function(event) {
+                console.log("键盘按键:", event.key);
+                if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'PageDown') {
+                    nextSlide();
+                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                    prevSlide();
+                }
+            });
+            
+            // 触摸滑动支持
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', function(event) {
+                touchStartX = event.changedTouches[0].screenX;
+            });
+            
+            document.addEventListener('touchend', function(event) {
+                touchEndX = event.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // 向左滑动，下一张
+                        nextSlide();
+                    } else {
+                        // 向右滑动，上一张
+                        prevSlide();
+                    }
+                }
+            }
+            
+            // 图表创建函数
+            function createTitleChart() {
+                const ctx = document.getElementById('titleChart');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['1990', '1995', '2000', '2005', '2010', '2015', '2020', '2024'],
+                        datasets: [
+                            {
+                                label: 'SEO关注度',
+                                data: [5, 20, 65, 85, 95, 90, 80, 70],
+                                borderColor: '#64ffda',
+                                backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'GEO关注度',
+                                data: [0, 0, 10, 25, 45, 75, 90, 95],
+                                borderColor: '#4facfe',
+                                backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1'
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart1() {
+                const ctx = document.getElementById('chart1');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Netscape', 'Mosaic', '其他'],
+                        datasets: [{
+                            data: [70, 20, 10],
+                            backgroundColor: [
+                                'rgba(100, 255, 218, 0.8)',
+                                'rgba(79, 172, 254, 0.8)',
+                                'rgba(168, 178, 209, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(100, 255, 218, 1)',
+                                'rgba(79, 172, 254, 1)',
+                                'rgba(168, 178, 209, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#a8b2d1',
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart2() {
+                const ctx = document.getElementById('chart2');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['1996', '1997', '1998', '1999', '2000'],
+                        datasets: [
+                            {
+                                label: 'IE',
+                                data: [20, 40, 65, 80, 95],
+                                backgroundColor: 'rgba(79, 172, 254, 0.8)'
+                            },
+                            {
+                                label: 'Netscape',
+                                data: [70, 55, 35, 20, 5],
+                                backgroundColor: 'rgba(100, 255, 218, 0.8)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart3() {
+                const ctx = document.getElementById('chart3');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
+                        datasets: [
+                            {
+                                label: 'IE',
+                                data: [95, 90, 88, 85, 80, 75, 70, 65],
+                                borderColor: '#4facfe',
+                                backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                                fill: true
+                            },
+                            {
+                                label: 'Firefox',
+                                data: [0, 5, 10, 15, 20, 25, 28, 30],
+                                borderColor: '#ff6b6b',
+                                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                                fill: true
+                            },
+                            {
+                                label: 'Safari',
+                                data: [0, 0, 3, 5, 8, 10, 12, 15],
+                                borderColor: '#64ffda',
+                                backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart4() {
+                const ctx = document.getElementById('chart4');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['2009', '2010', '2011', '2012', '2013', '2014'],
+                        datasets: [
+                            {
+                                label: 'Chrome',
+                                data: [5, 15, 30, 40, 45, 52],
+                                backgroundColor: 'rgba(255, 193, 7, 0.8)'
+                            },
+                            {
+                                label: 'IE',
+                                data: [60, 50, 40, 30, 25, 20],
+                                backgroundColor: 'rgba(79, 172, 254, 0.8)'
+                            },
+                            {
+                                label: 'Firefox',
+                                data: [25, 28, 25, 22, 20, 18],
+                                backgroundColor: 'rgba(255, 107, 107, 0.8)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                stacked: false,
+                                ticks: {
+                                    color: '#a8b2d1'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                stacked: false,
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart5() {
+                const ctx = document.getElementById('chart5');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['地理位置API', '移动优先设计', '本地搜索优化', '基于位置的内容', '位置数据分析'],
+                        datasets: [
+                            {
+                                label: '2015',
+                                data: [40, 55, 60, 35, 25],
+                                borderColor: 'rgba(79, 172, 254, 0.8)',
+                                backgroundColor: 'rgba(79, 172, 254, 0.2)',
+                                pointBackgroundColor: 'rgba(79, 172, 254, 1)'
+                            },
+                            {
+                                label: '2020',
+                                data: [85, 90, 88, 80, 75],
+                                borderColor: 'rgba(100, 255, 218, 0.8)',
+                                backgroundColor: 'rgba(100, 255, 218, 0.2)',
+                                pointBackgroundColor: 'rgba(100, 255, 218, 1)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: 'rgba(168, 178, 209, 0.2)'
+                                },
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.2)'
+                                },
+                                pointLabels: {
+                                    color: '#a8b2d1'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    backdropColor: 'transparent'
+                                },
+                                min: 0,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart6() {
+                const ctx = document.getElementById('chart6');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['第三方Cookie', '第一方数据', '上下文分析', '隐私保护技术', 'AI驱动个性化'],
+                        datasets: [
+                            {
+                                label: '传统GEO营销',
+                                data: [80, 40, 30, 20, 25],
+                                backgroundColor: 'rgba(168, 178, 209, 0.8)'
+                            },
+                            {
+                                label: '现代GEO营销',
+                                data: [20, 85, 90, 95, 85],
+                                backgroundColor: 'rgba(100, 255, 218, 0.8)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    maxRotation: 45
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function createChart7() {
+                const ctx = document.getElementById('chart7');
+                if (!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['1990-1995', '1996-2000', '2001-2008', '2009-2014', '2015-2020', '2021-2024'],
+                        datasets: [
+                            {
+                                label: '技术重点',
+                                data: [0, 1, 2, 3, 4, 5],
+                                borderColor: '#64ffda',
+                                backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                                fill: false,
+                                tension: 0.4,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: '营销重点',
+                                data: [0, 1, 2, 3, 4, 5],
+                                borderColor: '#4facfe',
+                                backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                                fill: false,
+                                tension: 0.4,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#a8b2d1'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const labels = ['文档查看', '渲染引擎', 'Web标准', '性能优化', '智能集成', '隐私与AI'];
+                                            const labels2 = ['目录列表', '关键词SEO', '内容SEO', '移动优先', '本地GEO', '上下文GEO'];
+                                            
+                                            if (context.dataset.label === '技术重点') {
+                                                return labels[context.dataIndex];
+                                            } else {
+                                                return labels2[context.dataIndex];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1'
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                grid: {
+                                    color: 'rgba(168, 178, 209, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    display: false
+                                },
+                                min: 0,
+                                max: 5
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    color: '#a8b2d1',
+                                    display: false
+                                },
+                                min: 0,
+                                max: 5
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 初始化第一张幻灯片的图表
+            updateSlides();
+            
+            // 添加点击空白处也能翻页的功能（可选）
+            document.addEventListener('click', function(e) {
+                // 如果点击的不是导航按钮或指示器
+                if (!e.target.closest('.nav-btn') && !e.target.closest('.indicator')) {
+                    // 点击右侧80%区域进入下一页
+                    if (e.clientX > window.innerWidth * 0.8) {
+                        nextSlide();
+                    }
+                    // 点击左侧20%区域进入上一页
+                    else if (e.clientX < window.innerWidth * 0.2) {
+                        prevSlide();
+                    }
+                }
+            });
+            
+            console.log("幻灯片系统初始化完成");
+        });
+    </script>
+</body>
+</html>
