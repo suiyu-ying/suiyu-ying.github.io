@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人知识库</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #1e6fd9, #3a8bff);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav ul li:hover, nav ul li.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 主要内容区 */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .welcome-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .welcome-section h1 {
+            color: #1e6fd9;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        
+        .welcome-section p {
+            color: #666;
+            font-size: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* 软件工具区域 */
+        .software-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .tool-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-header {
+            background: linear-gradient(135deg, #3a8bff, #1e6fd9);
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .tool-content {
+            padding: 20px;
+        }
+        
+        .tool-content p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .features {
+            list-style-type: none;
+            margin-top: 15px;
+        }
+        
+        .features li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .features li:before {
+            content: "•";
+            color: #3a8bff;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* 技巧区域 */
+        .tips-section {
+            margin-top: 50px;
+        }
+        
+        .section-title {
+            color: #1e6fd9;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid #e6f0ff;
+            padding-bottom: 10px;
+        }
+        
+        .tips-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .tip-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .tip-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .tip-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3a8bff, #1e6fd9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .tip-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e6fd9;
+        }
+        
+        .shortcuts {
+            margin-top: 15px;
+        }
+        
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e6f0ff;
+        }
+        
+        .shortcut-key {
+            background-color: #e6f0ff;
+            color: #1e6fd9;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .shortcut-desc {
+            color: #555;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #1e3a5f;
+            color: #b0c4de;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        /* 标签区域 */
+        .tags-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background-color: #e6f0ff;
+            color: #1e6fd9;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        
+        .tag:hover {
+            background-color: #d0e2ff;
+        }
+        
+        /* 锚点区域样式 */
+        .section-anchor {
+            scroll-margin-top: 80px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 5px 10px;
+            }
+            
+            .software-tools, .tips-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">个人知识库</div>
+                <nav>
+                    <ul>
+                        <li class="active"><a href="#home">首页</a></li>
+                        <li><a href="#hot-tags">热门标签</a></li>
+                        <li><a href="#software-tools">软件工具</a></li>
+                        <li><a href="#software-tips">软件使用技巧</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区 -->
+    <div class="container">
+        <div class="main-content">
+            <!-- 欢迎区域 -->
+            <section id="home" class="welcome-section section-anchor">
+                <h1>欢迎来到我的设计软件知识库</h1>
+                <p>这里汇集了我学习过程中积累的CorelDRAW、Dreamweaver和Photoshop使用技巧与经验分享</p>
+            </section>
+            
+            <!-- 标签区域 -->
+            <section id="hot-tags" class="tags-section section-anchor">
+                <h2>热门标签</h2>
+                <div class="tags">
+                    <span class="tag">矢量设计</span>
+                    <span class="tag">网页布局</span>
+                    <span class="tag">图像处理</span>
+                    <span class="tag">UI设计</span>
+                    <span class="tag">色彩管理</span>
+                    <span class="tag">图层技巧</span>
+                    <span class="tag">快捷键</span>
+                    <span class="tag">效率提升</span>
+                </div>
+            </section>
+            
+            <!-- 软件工具区域 -->
+            <section id="software-tools" class="section-anchor">
+                <h2 class="section-title">软件工具</h2>
+                <div class="software-tools">
+                    <!-- CorelDRAW 卡片 -->
+                    <div class="tool-card">
+                        <div class="tool-header">CorelDRAW</div>
+                        <div class="tool-content">
+                            <p>专业的矢量图形设计软件，广泛应用于标志设计、插图制作和页面布局。</p>
+                            <ul class="features">
+                                <li>高效的矢量编辑工具</li>
+                                <li>强大的拼版功能</li>
+                                <li>丰富的色彩管理</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Dreamweaver 卡片 -->
+                    <div class="tool-card">
+                        <div class="tool-header">Dreamweaver</div>
+                        <div class="tool-content">
+                            <p>专业的网页设计和开发工具，支持可视化编辑和代码编写。</p>
+                            <ul class="features">
+                                <li>可视化网页设计</li>
+                                <li>代码提示和自动完成</li>
+                                <li>多屏幕预览</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Photoshop 卡片 -->
+                    <div class="tool-card">
+                        <div class="tool-header">Photoshop</div>
+                        <div class="tool-content">
+                            <p>功能强大的图像处理和编辑软件，广泛应用于平面设计和数字艺术。</p>
+                            <ul class="features">
+                                <li>高级图像处理</li>
+                                <li>丰富的滤镜效果</li>
+                                <li>图层和蒙版功能</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 使用技巧区域 -->
+            <section id="software-tips" class="tips-section section-anchor">
+                <h2 class="section-title">软件使用技巧</h2>
+                <div class="tips-container">
+                    <!-- CorelDRAW 技巧 -->
+                    <div class="tip-card">
+                        <div class="tip-header">
+                            <div class="tip-icon">CD</div>
+                            <div class="tip-title">CorelDRAW 效率技巧</div>
+                        </div>
+                        <p>掌握这些快捷键可以大幅提升在CorelDRAW中的工作效率。</p>
+                        <div class="shortcuts">
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + D</span>
+                                <span class="shortcut-desc">复制并偏移对象</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">F12</span>
+                                <span class="shortcut-desc">打开轮廓笔对话框</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Shift + F11</span>
+                                <span class="shortcut-desc">打开均匀填充对话框</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + Q</span>
+                                <span class="shortcut-desc">将对象转换为曲线</span>
+                            </div>
+                        </div>
+                        <p class="tip-content">工作处理技巧：使用"对齐与分布"工具可以快速对齐多个对象；利用"图框精确剪裁"功能可以将图片置入任意形状中。</p>
+                    </div>
+                    
+                    <!-- Dreamweaver 技巧 -->
+                    <div class="tip-card">
+                        <div class="tip-header">
+                            <div class="tip-icon">DW</div>
+                            <div class="tip-title">Dreamweaver 网页设计技巧</div>
+                        </div>
+                        <p>这些快捷键和技巧可以帮助您更高效地创建和编辑网页。</p>
+                        <div class="shortcuts">
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + Shift + R</span>
+                                <span class="shortcut-desc">在浏览器中预览</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + T</span>
+                                <span class="shortcut-desc">代码提示和自动完成</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">F5</span>
+                                <span class="shortcut-desc">刷新设计视图</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + E</span>
+                                <span class="shortcut-desc">快速编辑标签</span>
+                            </div>
+                        </div>
+                        <p class="tip-content">工作处理技巧：使用"流体网格布局"创建响应式网页；利用"库项目"功能管理重复使用的页面元素。</p>
+                    </div>
+                    
+                    <!-- Photoshop 技巧 -->
+                    <div class="tip-card">
+                        <div class="tip-header">
+                            <div class="tip-icon">PS</div>
+                            <div class="tip-title">Photoshop 图像处理技巧</div>
+                        </div>
+                        <p>掌握这些快捷键可以大幅提升在Photoshop中的工作效率。</p>
+                        <div class="shortcuts">
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + J</span>
+                                <span class="shortcut-desc">复制当前图层</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + T</span>
+                                <span class="shortcut-desc">自由变换</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + Shift + I</span>
+                                <span class="shortcut-desc">反向选择</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-key">Ctrl + Alt + Shift + E</span>
+                                <span class="shortcut-desc">盖印可见图层</span>
+                            </div>
+                        </div>
+                        <p class="tip-content">工作处理技巧：使用"调整图层"非破坏性编辑图像；利用"智能对象"保持图像质量；掌握"图层蒙版"实现精准选区。</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>© 2025 个人知识库 | 设计软件技巧分享</p>
+        </div>
+    </footer>
+
+    <script>
+        // 导航交互
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航链接点击事件
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // 移除所有active类
+                    navLinks.forEach(link => {
+                        link.parentElement.classList.remove('active');
+                    });
+                    // 为当前点击的项添加active类
+                    this.parentElement.classList.add('active');
+                });
+            });
+            
+            // 卡片悬停效果增强
+            const cards = document.querySelectorAll('.tool-card, .tip-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // 标签点击效果
+            const tags = document.querySelectorAll('.tag');
+            tags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    alert('您点击了标签: ' + this.textContent);
+                });
+            });
+            
+            // 滚动时更新导航激活状态
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('.section-anchor');
+                const navLinks = document.querySelectorAll('nav ul li a');
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.parentElement.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.parentElement.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
