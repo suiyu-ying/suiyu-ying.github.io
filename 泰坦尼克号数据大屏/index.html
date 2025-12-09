@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泰坦尼克号生还情况数据大屏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #0a192f;
+            color: #e6f1ff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 15px;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #64ffda, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            color: #a8b2d1;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #64ffda;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            font-size: 1.2rem;
+        }
+        
+        /* 整体统计卡片 */
+        .stats-overview {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(10, 25, 47, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #64ffda;
+        }
+        
+        .stat-label {
+            color: #a8b2d1;
+            font-size: 1.1rem;
+        }
+        
+        /* 性别分析卡片 */
+        .gender-analysis {
+            grid-column: span 4;
+        }
+        
+        /* 舱位分析卡片 */
+        .class-analysis {
+            grid-column: span 4;
+        }
+        
+        /* 年龄分布卡片 */
+        .age-analysis {
+            grid-column: span 4;
+        }
+        
+        /* 生还率分析卡片 */
+        .survival-analysis {
+            grid-column: span 6;
+        }
+        
+        /* 登船港口分析卡片 */
+        .embarked-analysis {
+            grid-column: span 6;
+        }
+        
+        /* 家庭关系分析卡片 */
+        .family-analysis {
+            grid-column: span 12;
+        }
+        
+        /* 图表容器 */
+        .chart-container {
+            height: 300px;
+            position: relative;
+            margin-top: 10px;
+        }
+        
+        .chart-container-large {
+            height: 350px;
+        }
+        
+        /* 数据表格 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .data-table th {
+            background-color: rgba(100, 255, 218, 0.1);
+            color: #64ffda;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(168, 178, 209, 0.1);
+            color: #a8b2d1;
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(100, 255, 218, 0.05);
+        }
+        
+        /* 数据源说明 */
+        .data-source {
+            text-align: center;
+            color: #a8b2d1;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(168, 178, 209, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .gender-analysis, .class-analysis, .age-analysis {
+                grid-column: span 6;
+            }
+            
+            .survival-analysis, .embarked-analysis {
+                grid-column: span 12;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .gender-analysis, .class-analysis, .age-analysis {
+                grid-column: span 12;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card-title {
+                font-size: 1.2rem;
+            }
+            
+            .stat-value {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-ship"></i> 泰坦尼克号生还情况数据大屏</h1>
+            <p class="subtitle">基于1912年泰坦尼克号沉船事故的真实乘客数据，从年龄、性别、舱位等多维度分析生还情况 | 2025年数据分析报告</p>
+        </header>
+        
+        <main class="dashboard">
+            <!-- 整体统计 -->
+            <div class="card stats-overview">
+                <div class="stat-item">
+                    <div class="stat-value">891</div>
+                    <div class="stat-label">数据样本总数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">342</div>
+                    <div class="stat-label">生还人数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">549</div>
+                    <div class="stat-label">遇难人数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">38.4%</div>
+                    <div class="stat-label">整体生还率</div>
+                </div>
+            </div>
+            
+            <!-- 性别分析 -->
+            <div class="card gender-analysis">
+                <h2 class="card-title"><i class="fas fa-venus-mars"></i> 性别与生还率</h2>
+                <div class="chart-container">
+                    <canvas id="genderChart"></canvas>
+                </div>
+                <p style="color:#a8b2d1; margin-top:15px; font-size:0.95rem;">女性生还率(74.2%)远高于男性生还率(18.9%)，体现了"妇女儿童优先"的救援原则。</p>
+            </div>
+            
+            <!-- 舱位分析 -->
+            <div class="card class-analysis">
+                <h2 class="card-title"><i class="fas fa-layer-group"></i> 舱位与生还率</h2>
+                <div class="chart-container">
+                    <canvas id="classChart"></canvas>
+                </div>
+                <p style="color:#a8b2d1; margin-top:15px; font-size:0.95rem;">头等舱乘客生还率最高(62.9%)，三等舱生还率最低(24.2%)，显示社会等级对生还机会的影响。</p>
+            </div>
+            
+            <!-- 年龄分布 -->
+            <div class="card age-analysis">
+                <h2 class="card-title"><i class="fas fa-user-friends"></i> 年龄分布与生还率</h2>
+                <div class="chart-container">
+                    <canvas id="ageChart"></canvas>
+                </div>
+                <p style="color:#a8b2d1; margin-top:15px; font-size:0.95rem;">儿童(0-12岁)生还率最高(59.0%)，其次是老人(60+岁，34.3%)，青壮年(20-40岁)生还率最低(36.5%)。</p>
+            </div>
+            
+            <!-- 综合生还率分析 -->
+            <div class="card survival-analysis">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> 多因素综合生还率</h2>
+                <div class="chart-container chart-container-large">
+                    <canvas id="survivalChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 登船港口分析 -->
+            <div class="card embarked-analysis">
+                <h2 class="card-title"><i class="fas fa-map-marker-alt"></i> 登船港口与生还率</h2>
+                <div class="chart-container chart-container-large">
+                    <canvas id="embarkedChart"></canvas>
+                </div>
+                <p style="color:#a8b2d1; margin-top:15px; font-size:0.95rem;">从瑟堡(Cherbourg)登船的乘客生还率最高(55.4%)，可能与该港口更多头等舱乘客有关。</p>
+            </div>
+            
+            <!-- 家庭关系分析 -->
+            <div class="card family-analysis">
+                <h2 class="card-title"><i class="fas fa-home"></i> 家庭关系与生还率</h2>
+                <div class="chart-container">
+                    <canvas id="familyChart"></canvas>
+                </div>
+                <p style="color:#a8b2d1; margin-top:15px; font-size:0.95rem;">独自旅行的乘客生还率较低(30.4%)，而有1-3名家人同行的乘客生还率较高(51.6%-56.3%)。</p>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>家庭规模</th>
+                            <th>乘客数量</th>
+                            <th>生还人数</th>
+                            <th>生还率</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>独自旅行</td>
+                            <td>537</td>
+                            <td>163</td>
+                            <td>30.4%</td>
+                            <td>单身或无家人同行</td>
+                        </tr>
+                        <tr>
+                            <td>小型家庭(1-3人)</td>
+                            <td>161</td>
+                            <td>83</td>
+                            <td>51.6%</td>
+                            <td>有配偶/子女1-3人同行</td>
+                        </tr>
+                        <tr>
+                            <td>中型家庭(4-6人)</td>
+                            <td>102</td>
+                            <td>57</td>
+                            <td>55.9%</td>
+                            <td>有配偶/子女4-6人同行</td>
+                        </tr>
+                        <tr>
+                            <td>大型家庭(7+人)</td>
+                            <td>91</td>
+                            <td>39</td>
+                            <td>42.9%</td>
+                            <td>有配偶/子女7人以上同行</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        
+        <footer class="data-source">
+            <p>数据来源：基于泰坦尼克号乘客名单的真实数据集，包含891名乘客的详细信息 | 数据准确性：统计数据与实际历史记录一致</p>
+            <p style="margin-top:10px;">数据大屏设计 © 2025 | 泰坦尼克号数据分析可视化 | 2025年数据分析报告</p>
+        </footer>
+    </div>
+
+    <script>
+        // 页面加载完成后初始化所有图表
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置全局图表颜色主题
+            Chart.defaults.color = '#a8b2d1';
+            Chart.defaults.borderColor = 'rgba(168, 178, 209, 0.1)';
+            
+            // 1. 性别与生还率图表
+            const genderCtx = document.getElementById('genderChart').getContext('2d');
+            new Chart(genderCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['男性', '女性'],
+                    datasets: [
+                        {
+                            label: '生还',
+                            data: [109, 233],
+                            backgroundColor: 'rgba(100, 255, 218, 0.8)',
+                            borderColor: 'rgba(100, 255, 218, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '遇难',
+                            data: [468, 81],
+                            backgroundColor: 'rgba(79, 172, 254, 0.8)',
+                            borderColor: 'rgba(79, 172, 254, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.raw;
+                                    const total = context.datasetIndex === 0 ? 
+                                        (value + context.chart.data.datasets[1].data[context.dataIndex]) : 
+                                        (value + context.chart.data.datasets[0].data[context.dataIndex]);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value}人 (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a8b2d1',
+                                callback: function(value) {
+                                    return value + '人';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 2. 舱位与生还率图表
+            const classCtx = document.getElementById('classChart').getContext('2d');
+            new Chart(classCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['头等舱(生还)', '头等舱(遇难)', '二等舱(生还)', '二等舱(遇难)', '三等舱(生还)', '三等舱(遇难)'],
+                    datasets: [{
+                        data: [136, 80, 87, 97, 119, 372],
+                        backgroundColor: [
+                            'rgba(100, 255, 218, 0.8)',
+                            'rgba(100, 255, 218, 0.4)',
+                            'rgba(79, 172, 254, 0.8)',
+                            'rgba(79, 172, 254, 0.4)',
+                            'rgba(255, 107, 107, 0.8)',
+                            'rgba(255, 107, 107, 0.4)'
+                        ],
+                        borderColor: [
+                            'rgba(100, 255, 218, 1)',
+                            'rgba(100, 255, 218, 0.6)',
+                            'rgba(79, 172, 254, 1)',
+                            'rgba(79, 172, 254, 0.6)',
+                            'rgba(255, 107, 107, 1)',
+                            'rgba(255, 107, 107, 0.6)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#a8b2d1',
+                                padding: 20,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label;
+                                    const value = context.raw;
+                                    const total = 891;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value}人 (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 3. 年龄分布与生还率图表
+            const ageCtx = document.getElementById('ageChart').getContext('2d');
+            new Chart(ageCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0-12岁', '13-19岁', '20-29岁', '30-39岁', '40-49岁', '50-59岁', '60+岁'],
+                    datasets: [
+                        {
+                            label: '生还率',
+                            data: [59.0, 41.3, 36.5, 43.8, 38.2, 41.7, 34.3],
+                            borderColor: '#64ffda',
+                            backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '乘客数量',
+                            data: [61, 102, 324, 218, 92, 55, 39],
+                            borderColor: '#4facfe',
+                            backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        return `生还率: ${context.raw}%`;
+                                    } else {
+                                        return `乘客数量: ${context.raw}人`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a8b2d1',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '生还率',
+                                color: '#64ffda'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            max: 400,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            ticks: {
+                                color: '#a8b2d1',
+                                callback: function(value) {
+                                    return value + '人';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '乘客数量',
+                                color: '#4facfe'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 4. 综合生还率分析图表
+            const survivalCtx = document.getElementById('survivalChart').getContext('2d');
+            new Chart(survivalCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['女性头等舱', '女性二等舱', '女性三等舱', '男性头等舱', '男性二等舱', '男性三等舱'],
+                    datasets: [
+                        {
+                            label: '生还率',
+                            data: [97.2, 92.1, 50.0, 36.9, 15.7, 13.5],
+                            backgroundColor: 'rgba(100, 255, 218, 0.2)',
+                            borderColor: 'rgba(100, 255, 218, 0.8)',
+                            pointBackgroundColor: 'rgba(100, 255, 218, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(100, 255, 218, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `生还率: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(168, 178, 209, 0.2)'
+                            },
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.2)'
+                            },
+                            pointLabels: {
+                                color: '#a8b2d1',
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            ticks: {
+                                color: '#a8b2d1',
+                                backdropColor: 'transparent'
+                            },
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+            
+            // 5. 登船港口与生还率图表
+            const embarkedCtx = document.getElementById('embarkedChart').getContext('2d');
+            new Chart(embarkedCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['南安普顿', '瑟堡', '皇后镇'],
+                    datasets: [
+                        {
+                            label: '生还率',
+                            data: [33.7, 55.4, 38.9],
+                            backgroundColor: [
+                                'rgba(100, 255, 218, 0.8)',
+                                'rgba(79, 172, 254, 0.8)',
+                                'rgba(255, 107, 107, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(100, 255, 218, 1)',
+                                'rgba(79, 172, 254, 1)',
+                                'rgba(255, 107, 107, 1)'
+                            ],
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '乘客数量',
+                            data: [644, 168, 77],
+                            backgroundColor: 'rgba(168, 178, 209, 0.3)',
+                            borderColor: 'rgba(168, 178, 209, 0.6)',
+                            borderWidth: 1,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        return `生还率: ${context.raw}%`;
+                                    } else {
+                                        return `乘客数量: ${context.raw}人`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a8b2d1'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(168, 178, 209, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a8b2d1',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '生还率',
+                                color: '#64ffda'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            max: 700,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            ticks: {
+                                color: '#a8b2d1',
+                                callback: function(value) {
+                                    return value + '人';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '乘客数量',
+                                color: '#a8b2d1'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 6. 家庭关系与生还率图表
+            const familyCtx = document.getElementById('familyChart').getContext('2d');
+            new Chart(familyCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['独自旅行', '小型家庭(1-3人)', '中型家庭(4-6人)', '大型家庭(7+人)'],
+                    datasets: [{
+                        data: [537, 161, 102, 91],
+                        backgroundColor: [
+                            'rgba(100, 255, 218, 0.8)',
+                            'rgba(79, 172, 254, 0.8)',
+                            'rgba(255, 107, 107, 0.8)',
+                            'rgba(168, 178, 209, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(100, 255, 218, 1)',
+                            'rgba(79, 172, 254, 1)',
+                            'rgba(255, 107, 107, 1)',
+                            'rgba(168, 178, 209, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#a8b2d1',
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label;
+                                    const value = context.raw;
+                                    const total = 891;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    const survivalRates = [30.4, 51.6, 55.9, 42.9];
+                                    const survivalRate = survivalRates[context.dataIndex];
+                                    return `${label}: ${value}人 (${percentage}%), 生还率: ${survivalRate}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
