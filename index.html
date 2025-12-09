@@ -3,548 +3,768 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人知识库</title>
+    <title>课堂随机点名系统</title>
     <style>
-        /* 全局样式 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
         }
         
         body {
-            background-color: #f5f9ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
             color: #333;
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
-        
-        a {
-            text-decoration: none;
-            color: inherit;
         }
         
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* 头部样式 */
-        header {
-            background: linear-gradient(135deg, #1e6fd9, #3a8bff);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        nav ul li:hover, nav ul li.active {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* 主要内容区 */
-        .main-content {
-            padding: 40px 0;
-        }
-        
-        .welcome-section {
+            width: 100%;
+            max-width: 900px;
             background-color: white;
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        
-        .welcome-section h1 {
-            color: #1e6fd9;
-            margin-bottom: 15px;
-            font-size: 28px;
-        }
-        
-        .welcome-section p {
-            color: #666;
-            font-size: 16px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        /* 软件工具区域 */
-        .software-tools {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-        
-        .tool-card {
-            background-color: white;
-            border-radius: 8px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s ease;
         }
         
-        .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .tool-header {
-            background: linear-gradient(135deg, #3a8bff, #1e6fd9);
+        .header {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
             color: white;
-            padding: 15px 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .tool-content {
-            padding: 20px;
-        }
-        
-        .tool-content p {
-            margin-bottom: 15px;
-            color: #555;
-        }
-        
-        .features {
-            list-style-type: none;
-            margin-top: 15px;
-        }
-        
-        .features li {
-            padding: 5px 0;
+            padding: 30px 25px;
+            text-align: center;
             position: relative;
-            padding-left: 20px;
+            overflow: hidden;
         }
         
-        .features li:before {
-            content: "•";
-            color: #3a8bff;
-            font-weight: bold;
+        .header::before {
+            content: "";
             position: absolute;
+            top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         
-        /* 技巧区域 */
-        .tips-section {
-            margin-top: 50px;
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
-        .section-title {
-            color: #1e6fd9;
-            margin-bottom: 20px;
-            font-size: 24px;
-            border-bottom: 2px solid #e6f0ff;
-            padding-bottom: 10px;
+        .header p {
+            opacity: 0.9;
+            font-size: 17px;
+            position: relative;
         }
         
-        .tips-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+        .main-content {
+            padding: 35px;
         }
         
-        .tip-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s;
-        }
-        
-        .tip-card:hover {
-            transform: translateY(-3px);
-        }
-        
-        .tip-header {
+        .student-display {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 50px 30px;
+            text-align: center;
+            margin-bottom: 35px;
+            border: 3px dashed #d0d7e2;
+            min-height: 220px;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
         }
         
-        .tip-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #3a8bff, #1e6fd9);
-            border-radius: 50%;
+        .student-display.rolling {
+            animation: pulse-bg 0.8s infinite alternate;
+        }
+        
+        @keyframes pulse-bg {
+            from { background: linear-gradient(to right, #f8f9fa, #e9ecef); }
+            to { background: linear-gradient(to right, #e9ecef, #dde1e7); }
+        }
+        
+        .student-name {
+            font-size: 56px;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 15px;
+            min-height: 70px;
+            transition: all 0.2s ease;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .student-id {
+            font-size: 22px;
+            color: #5a6c7d;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 8px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 18px 35px;
+            font-size: 19px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            min-width: 180px;
+        }
+        
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-start {
+            background: linear-gradient(to right, #3498db, #2980b9);
             color: white;
-            font-weight: bold;
-            margin-right: 15px;
         }
         
-        .tip-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1e6fd9;
+        .btn-start:hover:not(:disabled) {
+            background: linear-gradient(to right, #2980b9, #2573a7);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 18px rgba(41, 128, 185, 0.3);
         }
         
-        .shortcuts {
-            margin-top: 15px;
+        .btn-stop {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
         }
         
-        .shortcut-item {
+        .btn-stop:hover:not(:disabled) {
+            background: linear-gradient(to right, #c0392b, #a93226);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 18px rgba(192, 57, 43, 0.3);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .btn-reset:hover:not(:disabled) {
+            background: linear-gradient(to right, #27ae60, #219653);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 18px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .btn-icon {
+            font-size: 22px;
+        }
+        
+        .stats {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #e6f0ff;
-        }
-        
-        .shortcut-key {
-            background-color: #e6f0ff;
-            color: #1e6fd9;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        
-        .shortcut-desc {
-            color: #555;
-        }
-        
-        /* 页脚样式 */
-        footer {
-            background-color: #1e3a5f;
-            color: #b0c4de;
-            padding: 20px 0;
-            text-align: center;
-            margin-top: 50px;
-        }
-        
-        /* 标签区域 */
-        .tags-section {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
-        .tags {
+        .stat-box {
+            flex: 1;
+            min-width: 180px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #4b6cb7;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        .history-container {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .history-header {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .history-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px 5px;
         }
         
-        .tag {
-            background-color: #e6f0ff;
-            color: #1e6fd9;
-            padding: 5px 12px;
-            border-radius: 20px;
+        .history-item {
+            background-color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border-left: 5px solid #3498db;
+            min-width: 180px;
+            transition: transform 0.2s ease;
+        }
+        
+        .history-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .history-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .history-details {
             font-size: 14px;
-            transition: background-color 0.3s;
-            cursor: pointer;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
         }
         
-        .tag:hover {
-            background-color: #d0e2ff;
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #95a5a6;
+            font-size: 15px;
+            border-top: 1px solid #eee;
+            background-color: #f8f9fa;
         }
         
-        /* 锚点区域样式 */
-        .section-anchor {
-            scroll-margin-top: 80px;
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+            animation: highlight-pulse 1s infinite alternate;
         }
         
-        /* 响应式设计 */
+        @keyframes highlight-pulse {
+            from { text-shadow: 0 0 5px rgba(231, 76, 60, 0.5); }
+            to { text-shadow: 0 0 15px rgba(231, 76, 60, 0.8), 0 0 20px rgba(231, 76, 60, 0.4); }
+        }
+        
+        .empty-history {
+            color: #95a5a6;
+            text-align: center;
+            width: 100%;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        /* 滚动条样式 */
+        .history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .history-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
         @media (max-width: 768px) {
-            .header-content {
+            .header h1 {
+                font-size: 26px;
+            }
+            
+            .student-name {
+                font-size: 40px;
+            }
+            
+            .btn {
+                padding: 16px 25px;
+                font-size: 17px;
+                min-width: 160px;
+            }
+            
+            .stat-box {
+                min-width: 140px;
+            }
+            
+            .stat-value {
+                font-size: 30px;
+            }
+            
+            .main-content {
+                padding: 25px 20px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .buttons {
                 flex-direction: column;
-                text-align: center;
+                align-items: center;
             }
             
-            nav ul {
-                margin-top: 15px;
-                justify-content: center;
-                flex-wrap: wrap;
+            .btn {
+                width: 100%;
+                max-width: 300px;
             }
             
-            nav ul li {
-                margin: 5px 10px;
+            .stats {
+                flex-direction: column;
             }
             
-            .software-tools, .tips-container {
-                grid-template-columns: 1fr;
+            .student-name {
+                font-size: 34px;
             }
+            
+            .student-id {
+                font-size: 18px;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
         }
     </style>
 </head>
 <body>
-    <!-- 头部导航 -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">个人知识库</div>
-                <nav>
-                    <ul>
-                        <li class="active"><a href="#home">首页</a></li>
-                        <li><a href="#hot-tags">热门标签</a></li>
-                        <li><a href="#software-tools">软件工具</a></li>
-                        <li><a href="#software-tips">软件使用技巧</a></li>
-                    </ul>
-                </nav>
+    <div class="container">
+        <div class="header">
+            <h1>课堂随机点名系统</h1>
+            <p>基于 students.xlsx 名单 · 公平随机 · 记录完整历史</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="student-display" id="studentDisplay">
+                <div class="student-name" id="studentName">等待点名</div>
+                <div class="student-id" id="studentId">点击开始按钮随机选择学生</div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-start" id="startBtn">
+                    <span class="btn-icon">▶</span>
+                    <span>开始随机点名</span>
+                </button>
+                <button class="btn btn-stop" id="stopBtn" disabled>
+                    <span class="btn-icon">⏹</span>
+                    <span>停止并选中</span>
+                </button>
+                <button class="btn btn-reset" id="resetBtn">
+                    <span class="btn-icon">↻</span>
+                    <span>重置记录</span>
+                </button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="calledCount">0</div>
+                    <div class="stat-label">已点名次数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="remainingCount">48</div>
+                    <div class="stat-label">剩余学生数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalCount">48</div>
+                    <div class="stat-label">总学生数</div>
+                </div>
+            </div>
+            
+            <div class="history-container">
+                <div class="history-header">
+                    <span>📋 点名历史记录</span>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="empty-history">暂无点名记录，点击开始按钮进行点名</div>
+                </div>
             </div>
         </div>
-    </header>
-
-    <!-- 主要内容区 -->
-    <div class="container">
-        <div class="main-content">
-            <!-- 欢迎区域 -->
-            <section id="home" class="welcome-section section-anchor">
-                <h1>欢迎来到我的设计软件知识库</h1>
-                <p>这里汇集了我学习过程中积累的CorelDRAW、Dreamweaver和Photoshop使用技巧与经验分享</p>
-            </section>
-            
-            <!-- 标签区域 -->
-            <section id="hot-tags" class="tags-section section-anchor">
-                <h2>热门标签</h2>
-                <div class="tags">
-                    <span class="tag">矢量设计</span>
-                    <span class="tag">网页布局</span>
-                    <span class="tag">图像处理</span>
-                    <span class="tag">UI设计</span>
-                    <span class="tag">色彩管理</span>
-                    <span class="tag">图层技巧</span>
-                    <span class="tag">快捷键</span>
-                    <span class="tag">效率提升</span>
-                </div>
-            </section>
-            
-            <!-- 软件工具区域 -->
-            <section id="software-tools" class="section-anchor">
-                <h2 class="section-title">软件工具</h2>
-                <div class="software-tools">
-                    <!-- CorelDRAW 卡片 -->
-                    <div class="tool-card">
-                        <div class="tool-header">CorelDRAW</div>
-                        <div class="tool-content">
-                            <p>专业的矢量图形设计软件，广泛应用于标志设计、插图制作和页面布局。</p>
-                            <ul class="features">
-                                <li>高效的矢量编辑工具</li>
-                                <li>强大的拼版功能</li>
-                                <li>丰富的色彩管理</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Dreamweaver 卡片 -->
-                    <div class="tool-card">
-                        <div class="tool-header">Dreamweaver</div>
-                        <div class="tool-content">
-                            <p>专业的网页设计和开发工具，支持可视化编辑和代码编写。</p>
-                            <ul class="features">
-                                <li>可视化网页设计</li>
-                                <li>代码提示和自动完成</li>
-                                <li>多屏幕预览</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Photoshop 卡片 -->
-                    <div class="tool-card">
-                        <div class="tool-header">Photoshop</div>
-                        <div class="tool-content">
-                            <p>功能强大的图像处理和编辑软件，广泛应用于平面设计和数字艺术。</p>
-                            <ul class="features">
-                                <li>高级图像处理</li>
-                                <li>丰富的滤镜效果</li>
-                                <li>图层和蒙版功能</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- 使用技巧区域 -->
-            <section id="software-tips" class="tips-section section-anchor">
-                <h2 class="section-title">软件使用技巧</h2>
-                <div class="tips-container">
-                    <!-- CorelDRAW 技巧 -->
-                    <div class="tip-card">
-                        <div class="tip-header">
-                            <div class="tip-icon">CD</div>
-                            <div class="tip-title">CorelDRAW 效率技巧</div>
-                        </div>
-                        <p>掌握这些快捷键可以大幅提升在CorelDRAW中的工作效率。</p>
-                        <div class="shortcuts">
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + D</span>
-                                <span class="shortcut-desc">复制并偏移对象</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">F12</span>
-                                <span class="shortcut-desc">打开轮廓笔对话框</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Shift + F11</span>
-                                <span class="shortcut-desc">打开均匀填充对话框</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + Q</span>
-                                <span class="shortcut-desc">将对象转换为曲线</span>
-                            </div>
-                        </div>
-                        <p class="tip-content">工作处理技巧：使用"对齐与分布"工具可以快速对齐多个对象；利用"图框精确剪裁"功能可以将图片置入任意形状中。</p>
-                    </div>
-                    
-                    <!-- Dreamweaver 技巧 -->
-                    <div class="tip-card">
-                        <div class="tip-header">
-                            <div class="tip-icon">DW</div>
-                            <div class="tip-title">Dreamweaver 网页设计技巧</div>
-                        </div>
-                        <p>这些快捷键和技巧可以帮助您更高效地创建和编辑网页。</p>
-                        <div class="shortcuts">
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + Shift + R</span>
-                                <span class="shortcut-desc">在浏览器中预览</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + T</span>
-                                <span class="shortcut-desc">代码提示和自动完成</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">F5</span>
-                                <span class="shortcut-desc">刷新设计视图</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + E</span>
-                                <span class="shortcut-desc">快速编辑标签</span>
-                            </div>
-                        </div>
-                        <p class="tip-content">工作处理技巧：使用"流体网格布局"创建响应式网页；利用"库项目"功能管理重复使用的页面元素。</p>
-                    </div>
-                    
-                    <!-- Photoshop 技巧 -->
-                    <div class="tip-card">
-                        <div class="tip-header">
-                            <div class="tip-icon">PS</div>
-                            <div class="tip-title">Photoshop 图像处理技巧</div>
-                        </div>
-                        <p>掌握这些快捷键可以大幅提升在Photoshop中的工作效率。</p>
-                        <div class="shortcuts">
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + J</span>
-                                <span class="shortcut-desc">复制当前图层</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + T</span>
-                                <span class="shortcut-desc">自由变换</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + Shift + I</span>
-                                <span class="shortcut-desc">反向选择</span>
-                            </div>
-                            <div class="shortcut-item">
-                                <span class="shortcut-key">Ctrl + Alt + Shift + E</span>
-                                <span class="shortcut-desc">盖印可见图层</span>
-                            </div>
-                        </div>
-                        <p class="tip-content">工作处理技巧：使用"调整图层"非破坏性编辑图像；利用"智能对象"保持图像质量；掌握"图层蒙版"实现精准选区。</p>
-                    </div>
-                </div>
-            </section>
+        
+        <div class="footer">
+            <p>基于 students.xlsx 名单 | 共48名学生 | 随机点名系统 | 快捷键: 空格键开始/停止, Ctrl+R重置</p>
         </div>
     </div>
 
-    <!-- 页脚 -->
-    <footer>
-        <div class="container">
-            <p>© 2025 个人知识库 | 设计软件技巧分享</p>
-        </div>
-    </footer>
-
     <script>
-        // 导航交互
-        document.addEventListener('DOMContentLoaded', function() {
-            // 导航链接点击事件
-            const navLinks = document.querySelectorAll('nav ul li a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // 移除所有active类
-                    navLinks.forEach(link => {
-                        link.parentElement.classList.remove('active');
-                    });
-                    // 为当前点击的项添加active类
-                    this.parentElement.classList.add('active');
-                });
-            });
+        // 学生数据 - 来自您提供的Excel表格
+        const students = [
+            { id: 1, name: "刘果彧", studentId: "2024106005" },
+            { id: 2, name: "郑舒心", studentId: "2024106011" },
+            { id: 3, name: "白宇曦", studentId: "2024106015" },
+            { id: 4, name: "张媛媛", studentId: "2024106021" },
+            { id: 5, name: "于梦欢", studentId: "2024106025" },
+            { id: 6, name: "张梦宇", studentId: "2024106029" },
+            { id: 7, name: "耿铂涵", studentId: "2024106031" },
+            { id: 8, name: "邱怀瑾", studentId: "2024106034" },
+            { id: 9, name: "李寓欣", studentId: "2024106036" },
+            { id: 10, name: "杜筱曼", studentId: "2024106040" },
+            { id: 11, name: "张延蓉", studentId: "2024106042" },
+            { id: 12, name: "刘娱菲", studentId: "2024106043" },
+            { id: 13, name: "王枝怡", studentId: "2024106046" },
+            { id: 14, name: "李子默", studentId: "2024106047" },
+            { id: 15, name: "李昱潼", studentId: "2024106053" },
+            { id: 16, name: "李冠颉", studentId: "2024106054" },
+            { id: 17, name: "李佳瑶", studentId: "2024106068" },
+            { id: 18, name: "邹佳彤", studentId: "2024106069" },
+            { id: 19, name: "张曦月", studentId: "2024106071" },
+            { id: 20, name: "雷湘", studentId: "2024106073" },
+            { id: 21, name: "杨雪琴", studentId: "2024106074" },
+            { id: 22, name: "程赟菲", studentId: "2024106075" },
+            { id: 23, name: "张王玉", studentId: "2024106077" },
+            { id: 24, name: "杨本钰", studentId: "2024106078" },
+            { id: 25, name: "高静怡", studentId: "2024106079" },
+            { id: 26, name: "李丹", studentId: "2024106080" },
+            { id: 27, name: "汪培", studentId: "2024106081" },
+            { id: 28, name: "马芙蓉", studentId: "2024106083" },
+            { id: 29, name: "张若兮", studentId: "2024106084" },
+            { id: 30, name: "王歌璇", studentId: "2024106085" },
+            { id: 31, name: "王蒙", studentId: "2024106086" },
+            { id: 32, name: "李欣", studentId: "2024106087" },
+            { id: 33, name: "左明颖", studentId: "2024106088" },
+            { id: 34, name: "吴昕昱", studentId: "2024106089" },
+            { id: 35, name: "张丹", studentId: "2024106090" },
+            { id: 36, name: "格桑拉姆", studentId: "2024106093" },
+            { id: 37, name: "李玥潼", studentId: "2024106094" },
+            { id: 38, name: "杨丽", studentId: "2024106097" },
+            { id: 39, name: "马国森", studentId: "2024106098" },
+            { id: 40, name: "王怀玉", studentId: "2024106099" },
+            { id: 41, name: "刘存帅", studentId: "2024106100" },
+            { id: 42, name: "符佳豪", studentId: "2024106103" },
+            { id: 43, name: "孙梓卿", studentId: "2024106104" },
+            { id: 44, name: "马晨皓", studentId: "2024106112" },
+            { id: 45, name: "张洛闻", studentId: "2024106113" },
+            { id: 46, name: "扎西", studentId: "2024106115" },
+            { id: 47, name: "曹鑫鑫", studentId: "2024106116" },
+            { id: 48, name: "帕尔哈提江·麦图荪", studentId: "2024106118" }
+        ];
+
+        // 系统状态
+        let remainingStudents = [...students];
+        let calledStudents = [];
+        let isRolling = false;
+        let rollInterval;
+        let currentStudent = null;
+
+        // DOM元素
+        const studentNameElement = document.getElementById('studentName');
+        const studentIdElement = document.getElementById('studentId');
+        const studentDisplayElement = document.getElementById('studentDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const calledCountElement = document.getElementById('calledCount');
+        const remainingCountElement = document.getElementById('remainingCount');
+        const totalCountElement = document.getElementById('totalCount');
+        const historyListElement = document.getElementById('historyList');
+
+        // 初始化
+        function init() {
+            totalCountElement.textContent = students.length;
+            updateCounters();
+            renderHistory();
             
-            // 卡片悬停效果增强
-            const cards = document.querySelectorAll('.tool-card, .tip-card');
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-8px)';
+            // 添加初始动画
+            studentNameElement.classList.add('fade-in');
+            setTimeout(() => {
+                studentNameElement.classList.remove('fade-in');
+            }, 500);
+        }
+
+        // 更新计数器
+        function updateCounters() {
+            calledCountElement.textContent = calledStudents.length;
+            remainingCountElement.textContent = remainingStudents.length;
+            
+            // 如果所有学生都被点过了，显示提示
+            if (remainingStudents.length === 0) {
+                studentNameElement.textContent = "所有学生已点名完毕";
+                studentIdElement.textContent = "点击重置按钮重新开始";
+                studentNameElement.classList.add('highlight');
+                studentNameElement.classList.remove('fade-in');
+                void studentNameElement.offsetWidth; // 触发重绘
+                studentNameElement.classList.add('fade-in');
+            }
+        }
+
+        // 随机选择学生
+        function getRandomStudent() {
+            if (remainingStudents.length === 0) return null;
+            const randomIndex = Math.floor(Math.random() * remainingStudents.length);
+            return remainingStudents[randomIndex];
+        }
+
+        // 开始随机点名
+        function startRolling() {
+            if (remainingStudents.length === 0) {
+                alert("所有学生都已被点名，请重置后重试！");
+                return;
+            }
+            
+            isRolling = true;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            studentNameElement.classList.remove('highlight');
+            studentDisplayElement.classList.add('rolling');
+            
+            // 添加动画效果
+            studentNameElement.classList.remove('fade-in');
+            void studentNameElement.offsetWidth; // 触发重绘
+            studentNameElement.classList.add('fade-in');
+            
+            // 快速切换学生，模拟随机效果
+            rollInterval = setInterval(() => {
+                currentStudent = getRandomStudent();
+                if (currentStudent) {
+                    studentNameElement.textContent = currentStudent.name;
+                    studentIdElement.textContent = `学号: ${currentStudent.studentId}`;
+                    
+                    // 添加微妙的动画效果
+                    studentNameElement.classList.remove('fade-in');
+                    void studentNameElement.offsetWidth; // 触发重绘
+                    studentNameElement.classList.add('fade-in');
+                }
+            }, 80); // 每80毫秒切换一次
+        }
+
+        // 停止并选中当前学生
+        function stopRolling() {
+            if (!isRolling) return;
+            
+            clearInterval(rollInterval);
+            isRolling = false;
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            studentDisplayElement.classList.remove('rolling');
+            
+            if (currentStudent) {
+                // 从剩余学生中移除
+                const index = remainingStudents.findIndex(s => s.id === currentStudent.id);
+                if (index !== -1) {
+                    remainingStudents.splice(index, 1);
+                }
+                
+                // 添加到已点名列表
+                const now = new Date();
+                const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                
+                calledStudents.unshift({
+                    ...currentStudent,
+                    time: timeString
                 });
                 
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-            
-            // 标签点击效果
-            const tags = document.querySelectorAll('.tag');
-            tags.forEach(tag => {
-                tag.addEventListener('click', function() {
-                    alert('您点击了标签: ' + this.textContent);
-                });
-            });
-            
-            // 滚动时更新导航激活状态
-            window.addEventListener('scroll', function() {
-                const sections = document.querySelectorAll('.section-anchor');
-                const navLinks = document.querySelectorAll('nav ul li a');
-                let current = '';
+                // 更新显示
+                studentNameElement.textContent = currentStudent.name;
+                studentIdElement.textContent = `学号: ${currentStudent.studentId}`;
+                studentNameElement.classList.add('highlight');
                 
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-                    if (window.pageYOffset >= sectionTop - 100) {
-                        current = section.getAttribute('id');
-                    }
-                });
+                // 添加选中动画
+                studentNameElement.classList.remove('fade-in');
+                void studentNameElement.offsetWidth;
+                studentNameElement.classList.add('fade-in');
                 
-                navLinks.forEach(link => {
-                    link.parentElement.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + current) {
-                        link.parentElement.classList.add('active');
-                    }
-                });
+                // 更新计数器和历史记录
+                updateCounters();
+                renderHistory();
+                
+                // 播放提示音
+                playSelectSound();
+            }
+        }
+
+        // 重置系统
+        function resetSystem() {
+            clearInterval(rollInterval);
+            isRolling = false;
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            studentDisplayElement.classList.remove('rolling');
+            
+            remainingStudents = [...students];
+            calledStudents = [];
+            currentStudent = null;
+            
+            studentNameElement.textContent = "等待点名";
+            studentIdElement.textContent = "点击开始按钮随机选择学生";
+            studentNameElement.classList.remove('highlight');
+            
+            // 添加重置动画
+            studentNameElement.classList.remove('fade-in');
+            void studentNameElement.offsetWidth;
+            studentNameElement.classList.add('fade-in');
+            
+            updateCounters();
+            renderHistory();
+            
+            // 播放重置提示音
+            playResetSound();
+        }
+
+        // 渲染历史记录
+        function renderHistory() {
+            historyListElement.innerHTML = '';
+            
+            if (calledStudents.length === 0) {
+                historyListElement.innerHTML = '<div class="empty-history">暂无点名记录，点击开始按钮进行点名</div>';
+                return;
+            }
+            
+            calledStudents.forEach((student, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item fade-in';
+                historyItem.style.animationDelay = `${index * 0.05}s`;
+                historyItem.innerHTML = `
+                    <div class="history-name">${student.name}</div>
+                    <div class="history-details">
+                        <span>${student.studentId}</span>
+                        <span>${student.time}</span>
+                    </div>
+                `;
+                historyListElement.appendChild(historyItem);
             });
+        }
+
+        // 播放选择提示音
+        function playSelectSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log("音频播放失败，但不影响功能");
+            }
+        }
+
+        // 播放重置提示音
+        function playResetSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log("音频播放失败，但不影响功能");
+            }
+        }
+
+        // 事件监听
+        startBtn.addEventListener('click', startRolling);
+        stopBtn.addEventListener('click', stopRolling);
+        resetBtn.addEventListener('click', resetSystem);
+
+        // 初始化系统
+        init();
+        
+        // 添加键盘快捷键支持
+        document.addEventListener('keydown', (e) => {
+            // 空格键开始/停止
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isRolling) {
+                    stopRolling();
+                } else {
+                    startRolling();
+                }
+            }
+            
+            // R键重置
+            if (e.code === 'KeyR' && e.ctrlKey) {
+                e.preventDefault();
+                resetSystem();
+            }
+        });
+        
+        // 添加页面加载完成后的初始动画
+        window.addEventListener('load', () => {
+            document.querySelector('.container').style.opacity = '0';
+            document.querySelector('.container').style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                document.querySelector('.container').style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                document.querySelector('.container').style.opacity = '1';
+                document.querySelector('.container').style.transform = 'translateY(0)';
+            }, 100);
         });
     </script>
 </body>
